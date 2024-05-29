@@ -6,16 +6,20 @@ const AnimationWrapper = ({
   animate = { opacity: 1 },
   transition = { duration: 1 },
   keyValue,
+  className,
 }) => {
   return (
-    <motion.div
-      key={keyValue}
-      animate={animate}
-      transition={transition}
-      initial={initial}
-    >
-      {children}
-    </motion.div>
+    <AnimatePresence>
+      <motion.div
+        key={keyValue}
+        animate={animate}
+        transition={transition}
+        initial={initial}
+        className={className}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
