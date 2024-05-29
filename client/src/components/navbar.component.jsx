@@ -10,6 +10,7 @@ const Navbar = () => {
       <nav className="navbar">
         <Link to="/" className="flex-none w-10">
           <img src={logo} alt="" className="w-full" />
+          <span className="font-bold">BloggyBG</span>
         </Link>
         <div
           className={
