@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { nanoid } from "nanoid";
 
 //schemas here
 import User from "./Schema/User.js";
@@ -14,6 +15,15 @@ let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for pass
 mongoose.connect(process.env.DB_LOCATION, {
   autoIndex: true,
 });
+
+const generateUsername = async (email) => {
+    let username = email.split("@")[0];
+    let isUsernameNotUnique = await User.exists({"personal_info.username" : username}).then((result) => result)
+
+    isUsernameNotUnique ? username += nanoid().substring(0, 5) : ""
+    return username
+
+}
 
 server.use(express.json());
 
@@ -40,8 +50,8 @@ server.post("/signup", (req, res) => {
     });
   }
 
-  bcrypt.hash(password, 10, (err, hashed_password) => {
-    let username = email.split("@")[0];
+  bcrypt.hash(password, 10, async(err, hashed_password) => {
+    let username = await generateUsername(email)
 
     let user = new User({
       personal_info: { fullname, email, password: hashed_password, username },
@@ -56,7 +66,7 @@ server.post("/signup", (req, res) => {
         if (err.code == 11000) {
           return res
             .status(500)
-            .json({ error: "email address already exists" });
+            .json({ error: "Email address already exists" });
         }
         return res.status(500).json({ error: err.message });
       });
