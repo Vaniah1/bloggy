@@ -7,7 +7,28 @@ const UserAuthForm = ({ type }) => {
         <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
           {type == "sign-in" ? "Welcome Back!" : "Join Us Today"}
         </h1>
-        {type != "sign-in" ? <InputBox /> : ""}
+        {type != "sign-in" ? (
+          <InputBox
+            name="fullname"
+            type="text"
+            placeholder="Full Name"
+            icon="fi-rr-user"
+          />
+        ) : (
+          ""
+        )}
+        <InputBox
+          name="email"
+          type="email"
+          placeholder="Email"
+          icon="fi-rr-envelope"
+        />
+        <InputBox
+          name="password"
+          type="password"
+          placeholder="Password"
+          icon="fi-rr-key"
+        />
       </form>
     </section>
   );
