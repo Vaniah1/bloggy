@@ -1,24 +1,29 @@
 // Import necessary modules and components
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import InputBox from "../components/input.component";
 import googleIcon from "../imgs/google.png";
 import AnimationWrapper from "../common/page-animation";
-import { useRef } from "react";
+import { useRef, useContext } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
 import { storeInSession } from "../common/session";
+import { UserContext } from "../App";
 
 // Main component for user authentication form
 const UserAuthForm = ({ type }) => {
   // Ref to access form data
+  const authForm = useRef();
+  const { userAuth, setUserAuth } = useContext(UserContext);
+  const { access_token } = userAuth;
 
+  console.log(access_token);
   // Function to handle user authentication through server (not implemented)
   const userAuthThroughServer = (serverRoute, formData) => {
     axios
       .post("http://localhost:3000" + serverRoute, formData)
       .then(({ data }) => {
         storeInSession("user", JSON.stringify(data));
-        console.log(sessionStorage);
+        setUserAuth(data);
         toast.success("Successful");
       })
       .catch(({ response }) => {
@@ -91,7 +96,9 @@ const UserAuthForm = ({ type }) => {
   };
 
   // Render component
-  return (
+  return access_token ? (
+    <Navigate to="/" />
+  ) : (
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
         <Toaster />
