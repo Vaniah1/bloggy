@@ -4,11 +4,13 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import jwt from "jsonwebtoken"
+import cors from "cors"
 
 //schemas here
 import User from "./Schema/User.js";
 
 const server = express();
+
 let PORT = 3000;
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
@@ -42,6 +44,7 @@ const generateUsername = async (email) => {
 }
 
 server.use(express.json());
+server.use(cors())
 
 //SIGN UP SERVER
 server.post("/signup", (req, res) => {
@@ -54,7 +57,7 @@ server.post("/signup", (req, res) => {
   }
 
   if (!email.length) {
-    return res.status(403).json({ error: "enter email!!" });
+    return res.status(403).json({ error: "Enter email!!" });
   }
   if (!emailRegex.test(email)) {
     return res.status(403).json({ error: "Email is Invalid" });
@@ -63,7 +66,7 @@ server.post("/signup", (req, res) => {
   if (!passwordRegex.test(password)) {
     return res.status(403).json({
       error:
-        "password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters",
+        "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters",
     });
   }
 
