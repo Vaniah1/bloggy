@@ -55,17 +55,18 @@ const UserAuthForm = ({ type }) => {
 
     // Determine server route based on authentication type
     let serverRoute = type == "Sign-in" ? "/signin" : "/signup";
-    const form = new FormData(formElement);
-    const formData = {};
+    let form = new FormData(formElement);
+    let formData = {};
 
     // Convert form data to object
     for (const [key, value] of form.entries()) {
       formData[key] = value;
     }
+    console.log(formData);
     let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
     let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
 
-    const { fullname, email, password } = formData;
+    let { fullname, email, password } = formData;
 
     // Form Validation
 

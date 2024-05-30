@@ -10,14 +10,13 @@ const Navbar = () => {
   const [userNavPanel, setUserNavPanel] = useState(false);
 
   const {
-    userAuth,
     userAuth: { access_token, profile_img },
   } = useContext(UserContext);
   const handleUserNavPanel = () => {
     setUserNavPanel((currentVal) => !currentVal);
   };
 
-  const handleBLur = () => {
+  const handleBlur = () => {
     setTimeout(() => {
       setUserNavPanel(false);
     }, 200);
@@ -63,7 +62,7 @@ const Navbar = () => {
                 </button>
               </Link>
               <div
-                onBlur={handleBLur}
+                onBlur={handleBlur}
                 onClick={handleUserNavPanel}
                 className="relative"
               >
