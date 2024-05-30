@@ -10,7 +10,6 @@ import axios from "axios";
 // Main component for user authentication form
 const UserAuthForm = ({ type }) => {
   // Ref to access form data
-  const authForm = useRef();
 
   // Function to handle user authentication through server (not implemented)
   const userAuthThroughServer = (serverRoute, formData) => {
@@ -19,6 +18,7 @@ const UserAuthForm = ({ type }) => {
       .post("http://localhost:3000" + serverRoute, formData)
       .then(({ data }) => {
         console.log(data);
+        toast.success("Successful");
       })
       .catch(({ response }) => {
         toast.error(response.data.error);
@@ -49,7 +49,7 @@ const UserAuthForm = ({ type }) => {
 
     // Determine server route based on authentication type
     let serverRoute = type == "Sign-in" ? "/signin" : "/signup";
-    const form = new FormData(authForm.current);
+    const form = new FormData(formElement);
     const formData = {};
 
     // Convert form data to object
@@ -94,7 +94,7 @@ const UserAuthForm = ({ type }) => {
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
         <Toaster />
-        <form ref={authForm} className="w-[80%] max-w-[400px]">
+        <form id="formElement" className="w-[80%] max-w-[400px]">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type == "Sign-in" ? "Welcome Back!" : "Join Us Today"}
           </h1>
