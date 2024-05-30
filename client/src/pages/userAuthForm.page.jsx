@@ -3,6 +3,7 @@ import InputBox from "../components/input.component";
 import googleIcon from "../imgs/google.png";
 import AnimationWrapper from "../common/page-animation";
 import { useRef } from "react";
+import { Toaster, toast } from "react-hot-toast";
 
 const UserAuthForm = ({ type }) => {
   const authForm = useRef();
@@ -19,28 +20,32 @@ const UserAuthForm = ({ type }) => {
     const { fullname, email, password } = data;
 
     //Form Validation
-    if (fullname.length < 3) {
-      return console.log({ error: "Full name must be 3 letters long!!" });
+
+    //Fullname validation to distinguish from sign in and up
+    if (fullname) {
+      if (fullname.length < 3) {
+        return toast.error("Full name must be 3 letters long!!");
+      }
     }
 
     if (!email.length) {
-      return console.log({ error: "enter email!!" });
+      return toast.error("Enter email!!");
     }
     if (!emailRegex.test(email)) {
-      return console.log({ error: "Email is Invalid" });
+      return toast.error("Email is Invalid");
     }
 
     if (!passwordRegex.test(password)) {
-      return console.log({
-        error:
-          "password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters",
-      });
+      return toast.error(
+        "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters"
+      );
     }
   };
 
   return (
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
+        <Toaster />
         <form ref={authForm} className="w-[80%] max-w-[400px]">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type == "Sign-in" ? "Welcome Back!" : "Join Us Today"}
