@@ -7,8 +7,16 @@ const UserNavigationPanel = () => {
   const {
     userAuth: { username },
   } = useContext(UserContext);
+
+  const signOutUser = () => {
+    removeFromSession("user");
+    setUserAuth({ access_token: null });
+  };
   return (
-    <AnimationWrapper transition={{ duration: 0.2, y: { duration: 0.1 } }}>
+    <AnimationWrapper
+      className="right-0cabsolute z-50"
+      transition={{ duration: 0.2, y: { duration: 0.1 } }}
+    >
       <div className="bg-white absolute right-0 border border-grey w-60 overflow-hidden duration-200">
         <Link to="/editor" className="flex gap-2 link md:hidden pl-8 py-4">
           <i className="fi fi-rr-file-edit"></i>
@@ -16,17 +24,22 @@ const UserNavigationPanel = () => {
         </Link>
 
         <Link to={`/user/${username}`} className="flex gap-2 link pl-8 py-4">
-          <i className="fi fi-rr-user"></i>
           Profile
         </Link>
         <Link to="/dashboard/blogs" className="flex gap-2 link pl-8 py-4">
-          <i className="fi fi-rr-dashboard-monitor"></i>
           Dashboard
         </Link>
         <Link to="/settings/edit-profile" className="flex gap-2 link pl-8 py-4">
-          <i className="fi fi-rr-settings"></i>
           Settings
         </Link>
+        <span className="absolute border-t border-grey w-[100%] "></span>
+        <button
+          onClick={signOutUser}
+          className="text-left p-4 hover:bg-grey w-full pl-8 ppy-4"
+        >
+          <h1 className="font-bold text-xl mg-1">Sign Out</h1>
+          <p className="text-dark-grey">@{username}</p>
+        </button>
       </div>
     </AnimationWrapper>
   );
