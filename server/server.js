@@ -105,7 +105,7 @@ server.post("/signin", (req, res) => {
         .compare(password, user.personal_info.password)
         .then((isMatch) => {
           if (isMatch) {
-            return res.json({ status: "Login successful" });
+            return res.status(200).json({ status: "Login successful" });
           } else {
             return res.status(403).json({ error: "Invalid password" });
           }
