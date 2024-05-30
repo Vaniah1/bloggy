@@ -6,6 +6,7 @@ import AnimationWrapper from "../common/page-animation";
 import { useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
+import { storeInSession } from "../common/session";
 
 // Main component for user authentication form
 const UserAuthForm = ({ type }) => {
@@ -13,11 +14,11 @@ const UserAuthForm = ({ type }) => {
 
   // Function to handle user authentication through server (not implemented)
   const userAuthThroughServer = (serverRoute, formData) => {
-    console.log(import.meta.env.VITE_SERVER_DOMAIN + serverRoute, formData);
     axios
       .post("http://localhost:3000" + serverRoute, formData)
       .then(({ data }) => {
-        console.log(data);
+        storeInSession("user", JSON.stringify(data));
+        console.log(sessionStorage);
         toast.success("Successful");
       })
       .catch(({ response }) => {
