@@ -6,6 +6,10 @@ import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import jwt from "jsonwebtoken";
 import cors from "cors";
+import admin from "firebase-admin"
+import serviceAccountKey from "./blog-c4839-firebase-adminsdk-968ef-e467b49f03.json" assert { type: "json" }
+import pkg from 'firebase-admin';
+const {getAuth} = pkg;
 
 //schemas here
 import User from "./Schema/User.js";
@@ -13,6 +17,11 @@ import User from "./Schema/User.js";
 const server = express();
 
 let PORT = 3000;
+
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccountKey)
+})
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
 
@@ -112,6 +121,63 @@ server.post("/signin", (req, res) => {
       console.log(err.message);
       return res.status(500).json({ error: err.message });
     });
+});
+
+
+//Google Auth
+server.post("/google-auth", async (req, res) => {
+  let { access_token } = req.body;
+
+  try {
+    const decodedUser = await getAuth().verifyIdToken(access_token);
+    const { email, name, picture } = decodedUser;
+    const updatedPicture = picture.replace("s96-c", "s384-c");
+
+    let user = await User.findOne({ "personal_info.email": email })
+      .select(
+        "personal_info.fullname personal_info.username personal_info.profile_img google_auth"
+      )
+      .then((u) => u || null);
+
+    if (user) {
+      // login
+      if (!user.google_auth) {
+        return res
+          .status(403)
+          .json({
+            error:
+              "This email was signed up without google. Please log in with password to access the account",
+          });
+      }
+    } else {
+      // sign up
+      const username = await generateUsername(email);
+      user = new User({
+        personal_info: {
+          fullname: name,
+          email,
+          username,
+        },
+        google_auth: true,
+      });
+
+      try {
+        await user.save();
+      } catch (err) {
+        console.error("Error saving user:", err);
+        throw err;
+      }
+    }
+
+    return res.status(200).json(formatDataToSend(user));
+  } catch (err) {
+    return res
+      .status(500)
+      .json({
+        error:
+          "Failed to authenticate you with Google. Try with some other Google account",
+      });
+  }
 });
 
 server.listen(PORT, () => {
