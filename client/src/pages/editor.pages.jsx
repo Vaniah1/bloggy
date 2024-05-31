@@ -1,6 +1,8 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../App";
 import { Navigate } from "react-router-dom";
+import BlogEditor from "../components/blog-editor.component";
+import PublishForm from "../components/publish-form.component";
 
 const Editor = () => {
   const [editorState, setEditorState] = useState("editor");
@@ -10,9 +12,9 @@ const Editor = () => {
   return access_token === null ? (
     <Navigate to="/signin" />
   ) : editorState === "editor" ? (
-    <h1>Editor</h1>
+    <BlogEditor />
   ) : (
-    <h1>Publish Page</h1>
+    <PublishForm />
   );
 };
 
